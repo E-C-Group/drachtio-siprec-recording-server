@@ -1,0 +1,18 @@
+{
+  "drachtio": {
+    "host": "127.0.0.1",
+    "port": 9023,
+    "secret": "cymru"
+  },
+  "rtpengine": {
+    "remote": {
+      "host": "127.0.0.1",
+      "port": 33333
+    },
+    "localPort": 22223
+  },
+  "verification": {
+    "endpoint": "http://127.0.0.1:13000/verify",
+    "recordByDefault": false
+  }
+}

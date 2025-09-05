@@ -62,3 +62,15 @@ services:
       siprec:
         ipv4_address: 172.32.0.6
 
+  verifier:
+    image: node:20-alpine
+    container_name: verifier
+    command: node /srv/verification-server.js
+    volumes:
+      - ./verification-server.js:/srv/verification-server.js:ro
+    ports:
+      - "13000:3000/tcp"
+    networks:
+      siprec:
+        ipv4_address: 172.32.0.7
+

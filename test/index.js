@@ -1,3 +1,4 @@
+require('./polyfill');
 require('./parser');
 require('./docker_start');
 require('./call_tests');

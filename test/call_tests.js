@@ -125,3 +125,71 @@ test('siprec with multiple rtpengines', (t) => {
         t.end(err, 'error connecting to drachtio');
       });
 }) ;
+
+test('siprec with rtpengine + verification allowed', (t) => {
+  t.timeoutAfter(20000);
+
+  clearRequire('..');
+  clearRequire('../lib/rtpengine-call-handler');
+  clearRequire('../lib/utils');
+  clearRequire('config');
+  process.env.NODE_CONFIG_ENV = 'test4';
+
+  const vmap = `-v ${__dirname}/scenarios:/tmp`;
+  const args = 'drachtio/sipp sipp -m 1 -sf /tmp/uac_siprec_pcap.xml drachtio';
+  const cmd = `docker run -t --rm --net test_siprec ${vmap} ${args}`;
+
+  const srf = require('..');
+  srf
+    .on('connect', () => {
+      console.log(`cmd: ${cmd}`);
+      execCmd(cmd)
+        .then(() => {
+          t.pass('siprec with verification allowed passed');
+          srf.disconnect();
+          return t.end();
+        })
+        .catch((err) => {
+          t.end(err, 'verification allowed test failed');
+        });
+    })
+    .on('error', (err) => {
+      t.end(err, 'error connecting to drachtio');
+    });
+});
+
+test('siprec with rtpengine + verification denied', (t) => {
+  t.timeoutAfter(20000);
+
+  clearRequire('..');
+  clearRequire('../lib/rtpengine-call-handler');
+  clearRequire('../lib/utils');
+  clearRequire('config');
+  process.env.NODE_CONFIG_ENV = 'test4';
+
+  const vmap = `-v ${__dirname}/scenarios:/tmp`;
+  const args = 'drachtio/sipp sipp -m 1 -sf /tmp/uac_siprec_pcap_deny.xml drachtio';
+  const cmd = `docker run -t --rm --net test_siprec ${vmap} ${args}`;
+
+  const srf = require('..');
+  srf
+    .on('connect', () => {
+      console.log(`cmd: ${cmd}`);
+      // Expect SIPP to fail because server rejects with 403 on verification
+      exec(cmd, (err, stdout, stderr) => {
+        if (stdout) debug(stdout);
+        if (stderr) debug(stderr);
+        if (err) {
+          t.pass('verification denied as expected');
+          srf.disconnect();
+          return t.end();
+        }
+        t.fail('expected SIPP to fail due to verification denial');
+        srf.disconnect();
+        return t.end(new Error('expected failure due to 403'));
+      });
+    })
+    .on('error', (err) => {
+      t.end(err, 'error connecting to drachtio');
+    });
+});
