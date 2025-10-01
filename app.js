@@ -43,6 +43,12 @@ else {
   assert('recorder type not specified in configuration: must be either rtpengine or freeswitch');
 }
 
+// Add 200OK support for Options
+srf.options((req, res) => {
+  logger.info(`OPTIONS request with call-id ${req.get('Call-ID')}`);
+  return res.send(200);
+});
+
 srf.invite(callHandler);
 
 module.exports = srf;
