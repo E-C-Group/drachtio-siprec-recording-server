@@ -9,8 +9,9 @@ function combineAndVerifyPayloads(filename, delimiter, t) {
       const sdp = data.split('__split_here__');
       t.ok(sdp.length === 2, 'read two sdps');
       const full = combinePayloads(sdp[0], sdp[1], sdp[0], sdp[1]);
-      t.pass('combined payloads');
+      t.ok(full, 'combined payloads');
       t.end();
+      return;
     })
     .catch((err) => {
       console.error(err.stack);
@@ -59,6 +60,35 @@ test('parser: Sonus SIPREC payload', (t) => {
 }) ;
 test('parser: Cisco SIPREC payload', (t) => {
   parseAndVerifyPayload('cisco-siprec-offer.txt', '--uniqueBoundary', t) ;
+}) ;
+test('parser: AcmePacket SIPREC payload (quoted name)', (t) => {
+  fs.readFile(`${__dirname}/data/acme-siprec-offer-quoted-name.txt`, 'utf8')
+    .then((data) => {
+      const segments = data.split('\n--unique-boundary-1') ;
+      const regex = /.*Content-Type:\s+(.*)\n.*\n([\s\S.]*)$/;
+      const req = {payload: []} ;
+
+      for (let i = 1; i < segments.length; i++) {
+        const arr = regex.exec(segments[i]) ;
+        if (!arr) continue;
+        req.payload.push({type: arr[1], content: arr[2]}) ;
+      }
+      return parsePayload({req}) ;
+    })
+    .then((obj) => {
+      t.ok(obj.sdp1, 'parsed first SDP');
+      t.ok(obj.sdp2, 'parsed second SDP');
+      t.equal(obj.caller.aor, 'sip:22938884455@216.128.192.36', 'parsed caller aor');
+      t.equal(obj.caller.name, 'ECG Tester', 'normalized quoted caller name');
+      t.equal(obj.callee.aor, 'sip:+12298558585@216.128.192.137', 'parsed callee aor');
+      t.equal(obj.recordingSessionId, 'To5Z71XZTYhiHWrFDgu7XQ==', 'parsed recording session id');
+      t.end();
+      return;
+    })
+    .catch((err) => {
+      console.error(err.stack);
+      t.error(err);
+    });
 }) ;
 test('parser: Connectel SIPREC payload', (t) => {
   parseAndVerifyPayload('connectel-offer.txt', '--OSS-unique-boundary-42', t) ;
