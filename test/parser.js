@@ -90,6 +90,29 @@ test('parser: BroadWorks recording_metadata SIPREC payload', (t) => {
       t.error(err);
     });
 }) ;
+test('parser: BroadWorks termCall recording_metadata SIPREC payload', (t) => {
+  parsePayloadFromFile('broadworks-termcall-recording-metadata-offer.txt', '--UniqueBroadWorksBoundary')
+    .then((obj) => {
+      t.ok(obj.sdp1, 'parsed first SDP');
+      t.ok(obj.sdp2, 'parsed second SDP');
+      t.equal(obj.originalCallId, 'callhalf-5551587:0', 'parsed BroadWorks termCall call id');
+      t.equal(obj.caller.aor, 'sip:+15550001002@192.0.2.10', 'parsed BroadWorks termCall caller aor');
+      t.equal(obj.caller.number, '+15550001002', 'parsed BroadWorks termCall caller number');
+      t.equal(obj.callee.aor, 'sip:+15550001001@192.0.2.10', 'parsed BroadWorks termCall callee aor');
+      t.equal(obj.callee.number, '+15550001001', 'parsed BroadWorks termCall callee number');
+      t.equal(
+        obj.recordingSessionId,
+        'urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127',
+        'parsed termCall recording session id'
+      );
+      t.end();
+      return;
+    })
+    .catch((err) => {
+      console.error(err.stack);
+      t.error(err);
+    });
+}) ;
 test('parser: Promcomm SIPREC payload', (t) => {
   parseAndVerifyPayload('procomm-siprec-offer.txt', '--2CD2A2E9', t) ;
 }) ;

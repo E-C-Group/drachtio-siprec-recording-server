@@ -1,0 +1,81 @@
+
+--UniqueBroadWorksBoundary
+Content-Type: application/rs-metadata+xml
+Content-Disposition: recording-session
+
+<?xml version="1.0" encoding="UTF-8"?>
+<recording_metadata xmlns="urn:ietf:params:xml:ns:siprec">
+    <dataMode>complete</dataMode>
+    <recording id="urn:uuid:8f032192-08d7-4100-8e31-dae2c0a24b06">
+        <requestor>SRC</requestor>
+        <type>selective</type>
+    </recording>
+    <group id="urn:uuid:c93d1d26-b143-4540-ac27-6f3a9d9f8da3" recording="urn:uuid:8f032192-08d7-4100-8e31-dae2c0a24b06">
+        <initiator>sip:user1001@example.test</initiator>
+    </group>
+    <session id="urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127" group="urn:uuid:c93d1d26-b143-4540-ac27-6f3a9d9f8da3">
+        <start-time>2026-04-14T14:02:50-04:00</start-time>
+    </session>
+    <participant id="urn:uuid:9b2d2853-a5d9-4449-9e3d-7858ed167468" session="urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127">
+        <aor>sip:user1001@example.test</aor>
+        <send>
+            <id>urn:uuid:9a5a0789-9bb8-4abe-9bb6-3b7524d0e921</id>
+        </send>
+    </participant>
+    <participant id="urn:uuid:48bd329d-dc43-46c4-ac1c-1d7bc51ca158" session="urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127">
+        <aor>sip:+15550001002@192.0.2.10;user=phone</aor>
+        <send>
+            <id>urn:uuid:f675813a-a4b5-4d1e-b6b3-55c237568597</id>
+        </send>
+    </participant>
+    <stream id="urn:uuid:9a5a0789-9bb8-4abe-9bb6-3b7524d0e921" session="urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127">
+        <label>1</label>
+        <mode>separate</mode>
+    </stream>
+    <stream id="urn:uuid:f675813a-a4b5-4d1e-b6b3-55c237568597" session="urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127">
+        <label>2</label>
+        <mode>separate</mode>
+    </stream>
+    <extensiondata id="urn:uuid:84d2a769-f5f3-4427-aa0a-6ec16bf40713" parent="urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127">
+        <broadWorksRecordingMetadata xmlns="http://schema.broadsoft.com/broadworksCallRecording" version="4.0">
+            <extTrackingID>2034:2</extTrackingID>
+            <serviceProviderID>example_sp</serviceProviderID>
+            <groupID>EXAMPLE</groupID>
+            <userID>user1001@example.test</userID>
+            <callID>callhalf-5551587:0</callID>
+            <callType>
+                <termCall>
+                    <callingPartyNumber>sip:+15550001002@192.0.2.10;user=phone</callingPartyNumber>
+                    <calledPartyNumber>sip:+15550001001@192.0.2.10</calledPartyNumber>
+                </termCall>
+            </callType>
+            <recordingType>on</recordingType>
+        </broadWorksRecordingMetadata>
+    </extensiondata>
+</recording_metadata>
+--UniqueBroadWorksBoundary
+Content-Type: application/sdp
+
+v=0
+o=BroadWorks 380993 1 IN IP4 192.0.2.10
+s=-
+c=IN IP4 192.0.2.20
+t=0 0
+m=audio 12716 RTP/AVP 0 101 9
+a=rtpmap:9 G722/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=ptime:20
+a=sendonly
+a=label:1
+m=audio 12718 RTP/AVP 0 101 9
+a=rtpmap:9 G722/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=ptime:20
+a=sendonly
+a=label:2
+
+--UniqueBroadWorksBoundary--
