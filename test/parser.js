@@ -105,6 +105,11 @@ test('parser: BroadWorks termCall recording_metadata SIPREC payload', (t) => {
         'urn:uuid:51da7beb-27f4-4296-b23f-c9bc02669127',
         'parsed termCall recording session id'
       );
+      t.equal(obj.mediaStreams.length, 2, 'parsed ordered SIPREC media streams');
+      t.equal(obj.mediaStreams[0].label, '1', 'preserved first SDP media label');
+      t.equal(obj.mediaStreams[0].role, 'callee', 'mapped SDP label 1 to called party role');
+      t.equal(obj.mediaStreams[1].label, '2', 'preserved second SDP media label');
+      t.equal(obj.mediaStreams[1].role, 'caller', 'mapped SDP label 2 to calling party role');
       t.end();
       return;
     })
