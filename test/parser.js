@@ -118,6 +118,27 @@ test('parser: BroadWorks termCall recording_metadata SIPREC payload', (t) => {
       t.error(err);
     });
 }) ;
+test('parser: BroadWorks lineport peer inference', (t) => {
+  parsePayloadFromFile('broadworks-lineport-recording-metadata-offer.txt', '--UniqueBroadWorksBoundary')
+    .then((obj) => {
+      // Participant 2 (+12295556666) matches BW calledPartyNumber via the
+      // number path. Participant 1 (sip:fred@vwave.net) is a lineport AOR
+      // that cannot be matched against either BW value or the BW userID.
+      // The peer-inference pass should still assign role=caller to label 1
+      // by elimination, which is what drives the per-leg rtpengine slot.
+      t.equal(obj.mediaStreams.length, 2, 'parsed ordered SIPREC media streams');
+      t.equal(obj.mediaStreams[0].label, '1', 'preserved first SDP media label');
+      t.equal(obj.mediaStreams[0].role, 'caller', 'label 1 (fred lineport) inferred as caller');
+      t.equal(obj.mediaStreams[1].label, '2', 'preserved second SDP media label');
+      t.equal(obj.mediaStreams[1].role, 'callee', 'label 2 (+12295556666) resolved as callee by number match');
+      t.end();
+      return;
+    })
+    .catch((err) => {
+      console.error(err.stack);
+      t.error(err);
+    });
+}) ;
 test('parser: Promcomm SIPREC payload', (t) => {
   parseAndVerifyPayload('procomm-siprec-offer.txt', '--2CD2A2E9', t) ;
 }) ;
