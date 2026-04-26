@@ -4,7 +4,19 @@ const pino = require('pino');
 const Srf = require('drachtio-srf');
 const srf = new Srf() ;
 const logger = srf.locals.logger = pino();
+const dedup = require('./lib/dedup');
 let callHandler;
+
+// Initialize SIPREC ingress dedup.
+dedup.init({
+  logger,
+  redisHost: process.env.REDIS_HOST || (config.has('redis.host') ? config.get('redis.host') : undefined),
+  redisPort: process.env.REDIS_PORT || (config.has('redis.port') ? config.get('redis.port') : undefined),
+  redisDb: process.env.REDIS_DB || (config.has('redis.db') ? config.get('redis.db') : 1),
+  redisPassword: process.env.REDIS_PASSWORD
+    || (config.has('redis.password') ? config.get('redis.password') : undefined),
+  failOpen: process.env.SIPREC_DEDUP_FAIL_CLOSED === '1' ? false : true,
+});
 
 if (config.has('drachtio.host')) {
   logger.info(config.get('drachtio'), 'attempting inbound connection');
